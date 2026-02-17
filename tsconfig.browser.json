@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "rootDir": "src",
+    "outDir": "dist/browser",
+    "incremental": false,
+    "tsBuildInfoFile": "tsconfig.browser.tsbuildinfo",
+    "allowJs": false
+  },
+  "include": [
+    "src/browserLoader.ts",
+    "src/subscriptionManager.ts",
+    "src/runtime.ts"
+  ]
+}
