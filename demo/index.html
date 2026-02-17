@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary SOM — Browser Demo</title>
+<style>
+  /* Minimal host styles — everything else applied dynamically from .som */
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px;
+    gap: 24px;
+  }
+
+  /* ── Demo loader UI ── */
+  #som-status {
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    padding: 12px 16px;
+    background: #0F172A;
+    color: #94A3B8;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 560px;
+  }
+  #som-status .ok  { color: #4ADE80; }
+  #som-status .err { color: #F87171; }
+  #som-status .dim { color: #475569; }
+
+  /* ── Inspector panel ── */
+  #inspector {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  #inspector-header {
+    padding: 10px 14px;
+    background: #F8FAFC;
+    border-bottom: 1px solid #E2E8F0;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    justify-content: space-between;
+  }
+  #inspector-body {
+    padding: 12px 14px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .prop-row { display: flex; gap: 8px; padding: 2px 0; }
+  .prop-name  { color: #7C3AED; min-width: 160px; font-family: monospace; }
+  .prop-value { color: #0369A1; font-family: monospace; }
+  .prop-swatch {
+    width: 12px; height: 12px; border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── Demo card (unstyled until .som loads) ── */
+  #demo-area {
+    width: 100%;
+    max-width: 560px;
+    min-height: 80px;
+  }
+  .demo-card, .demo-badge, .demo-btn, .demo-stat, .demo-kpi, .demo-callout {
+    transition: all 0.2s ease;
+  }
+</style>
+</head>
+<body>
+
+<!-- Status console -->
+<div id="som-status">
+  <span class="dim">binary-som browser loader</span><br>
+  <span id="log-line">Initialising…</span>
+  <br>
+  <span id="invalidate-line" class="dim">invalidate: waiting</span>
+</div>
+
+<!-- Live inspector -->
+<div id="inspector">
+  <div id="inspector-header">
+    <span>Style Inspector</span>
+    <span id="inspector-selector" style="color:#64748B;font-weight:400">(hover a component)</span>
+  </div>
+  <div id="inspector-body">
+    <span style="color:#94A3B8">Hover any component below to inspect its .som-loaded properties.</span>
+  </div>
+</div>
+
+<!-- Demo area: styled entirely by the browser loader -->
+<div id="demo-area">
+  <div class="demo-card">
+    <div class="demo-title">Binary SOM</div>
+    <div class="demo-subtitle">Styles applied from a 2.4 kB binary — no CSS parsed at runtime.</div>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px">
+      <span class="demo-badge">STATIC</span>
+      <span class="demo-badge" id="badge-det">DETERMINISTIC</span>
+      <span class="demo-badge" id="badge-ndet">NONDETERMINISTIC</span>
+    </div>
+
+    <div class="demo-stats">
+      <div class="demo-stat">
+        <div class="demo-stat-value" id="stat-static">—</div>
+        <div class="demo-stat-label">STATIC</div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-value" id="stat-det">—</div>
+        <div class="demo-stat-label">DETERMINISTIC</div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-value" id="stat-pool">—</div>
+        <div class="demo-stat-label">Pool Entries</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <button class="demo-btn" onclick="reload()">Reload .som</button>
+    </div>
+
+    <div class="demo-section-title">Form Controls</div>
+    <div class="demo-grid-two">
+      <div class="demo-field">
+        <label class="demo-label">Project Name</label>
+        <input class="demo-input" value="Binary SOM Runtime" />
+      </div>
+      <div class="demo-field">
+        <label class="demo-label">Environment</label>
+        <input class="demo-input" value="production" />
+      </div>
+    </div>
+    <div class="demo-help">All field styles above are loaded from binary records.</div>
+
+    <div class="demo-section-title">Health Tags</div>
+    <div class="demo-pill-row">
+      <span class="demo-pill demo-pill-success">Stable</span>
+      <span class="demo-pill demo-pill-warn">Needs Review</span>
+      <span class="demo-pill demo-pill-danger">Alert</span>
+    </div>
+
+    <div class="demo-callout">
+      <div class="demo-callout-title">Runtime Note</div>
+      <div class="demo-callout-text">These components are rendered unstyled first, then hydrated by `styles.som` via DataView + O(1) hash lookup.</div>
+    </div>
+
+    <div class="demo-section-title">KPI Grid</div>
+    <div class="demo-kpi-grid">
+      <div class="demo-kpi">
+        <div class="demo-kpi-value">58</div>
+        <div class="demo-kpi-label">Browser tests</div>
+      </div>
+      <div class="demo-kpi">
+        <div class="demo-kpi-value">674</div>
+        <div class="demo-kpi-label">Total assertions</div>
+      </div>
+      <div class="demo-kpi">
+        <div class="demo-kpi-value">2.3kB</div>
+        <div class="demo-kpi-label">Loader gzip</div>
+      </div>
+    </div>
+    <div class="demo-progress">
+      <div class="demo-progress-bar"></div>
+    </div>
+
+    <div class="demo-section-title">Recent Checks</div>
+    <div class="demo-list">
+      <div class="demo-list-item active">Radix source validation completed</div>
+      <div class="demo-list-item">Tailwind generated corpus classified</div>
+      <div class="demo-list-item">Browser loader round-trip verified</div>
+    </div>
+
+    <div class="demo-section-title">Resize Boundary (Live Invalidation)</div>
+    <div class="demo-resize-wrapper">
+      <div class="demo-resize-container">
+        <p class="demo-resize-title">Drag Right Edge To Resize</p>
+        <p class="demo-resize-readout" id="resize-width">-- px</p>
+        <p class="demo-resize-label">Drag left or right — runtime invalidation updates this value</p>
+        <span class="demo-resize-badge">PARENT_SIZE boundary</span>
+      </div>
+    </div>
+
+    <div class="demo-pref-container">
+      <p class="demo-pref-label">User Preference Query</p>
+      <p class="demo-pref-value" id="pref-mode">prefers-color-scheme: light</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { SOMLoaderBrowser, fnv1a32 } from "/dist/browser/browserLoader.js";
+import { SOMRuntime } from "/dist/browser/runtime.js";
+
+const COMPONENT_SELECTORS = [
+  ".demo-card",
+  ".demo-title",
+  ".demo-subtitle",
+  ".demo-badge",
+  ".demo-btn",
+  ".demo-stats",
+  ".demo-stat",
+  ".demo-stat-value",
+  ".demo-stat-label",
+  ".demo-section-title",
+  ".demo-grid-two",
+  ".demo-field",
+  ".demo-label",
+  ".demo-input",
+  ".demo-help",
+  ".demo-pill-row",
+  ".demo-pill",
+  ".demo-pill-success",
+  ".demo-pill-warn",
+  ".demo-pill-danger",
+  ".demo-callout",
+  ".demo-callout-title",
+  ".demo-callout-text",
+  ".demo-kpi-grid",
+  ".demo-kpi",
+  ".demo-kpi-value",
+  ".demo-kpi-label",
+  ".demo-progress",
+  ".demo-progress-bar",
+  ".demo-list",
+  ".demo-list-item",
+  ".demo-resize-wrapper",
+  ".demo-resize-container",
+  ".demo-resize-title",
+  ".demo-resize-readout",
+  ".demo-resize-label",
+  ".demo-resize-badge",
+  ".demo-pref-container",
+  ".demo-pref-label",
+  ".demo-pref-value",
+];
+const ALL_COMPONENTS = COMPONENT_SELECTORS.map((sel) => ({ sel, hash: fnv1a32(sel) }));
+const HASH_TO_SELECTOR = new Map(ALL_COMPONENTS.map(({ sel, hash }) => [hash >>> 0, sel]));
+const INSPECTOR_QUERY = COMPONENT_SELECTORS.join(",");
+const DEMO_ASSET_BASE = "/demo/";
+const DEMO_SOM_URL = `${DEMO_ASSET_BASE}styles.som`;
+const DEMO_FALLBACK_URL = `${DEMO_ASSET_BASE}fallback.css`;
+
+const log = (msg, cls = '') => {
+  document.getElementById('log-line').innerHTML = cls ? `<span class="${cls}">${msg}</span>` : msg;
+};
+
+const inspectorSelectorEl = document.getElementById('inspector-selector');
+const inspectorBodyEl = document.getElementById('inspector-body');
+const demoAreaEl = document.getElementById('demo-area');
+const INSPECTOR_PLACEHOLDER =
+  '<span style="color:#94A3B8">Hover any component below to inspect its .som-loaded properties.</span>';
+
+function showInspector(sel, record) {
+  inspectorSelectorEl.textContent = sel;
+  if (!record) {
+    inspectorBodyEl.innerHTML = '<span style="color:#94A3B8">No record found</span>';
+    return;
+  }
+
+  const rows = [];
+  if (record.type === 'STATIC' && record.properties) {
+    for (const [prop, value] of record.properties) {
+      const isColor = /^#[0-9a-f]{3,8}$|^rgb|^hsl/i.test(value);
+      const swatch = isColor ? `<span class="prop-swatch" style="background:${value}"></span>` : '';
+      rows.push(`<div class="prop-row">${swatch}<span class="prop-name">${prop}</span><span class="prop-value">${value}</span></div>`);
+    }
+  }
+
+  inspectorBodyEl.innerHTML = rows.length
+    ? `<div style="margin-bottom:6px;color:#64748B;font-size:11px">type: <b style="color:#0F172A">${record.type}</b> · ${record.properties?.size ?? 0} properties</div>${rows.join('')}`
+    : `<span style="color:#94A3B8">type: ${record.type}</span>`;
+}
+
+let loader = null;
+let runtime = null;
+let inspectorBound = false;
+let lastInspectorSelector = null;
+let invalidationCount = 0;
+
+const RESIZE_BOUNDARY_SELECTOR = '.demo-resize-container';
+const RESIZE_BOUNDARY_HASH = fnv1a32(RESIZE_BOUNDARY_SELECTOR) >>> 0;
+
+function resetInspector() {
+  inspectorSelectorEl.textContent = '(hover a component)';
+  inspectorBodyEl.innerHTML = INSPECTOR_PLACEHOLDER;
+  lastInspectorSelector = null;
+}
+
+function resolveBestSelector(el) {
+  let best = null;
+  for (const sel of COMPONENT_SELECTORS) {
+    if (!el.matches(sel)) continue;
+    if (!best || sel.length > best.length) best = sel;
+  }
+  return best;
+}
+
+function bindInspector() {
+  if (inspectorBound) return;
+  inspectorBound = true;
+
+  demoAreaEl.addEventListener('pointermove', (event) => {
+    if (!loader) return;
+    const hit = event.target.closest(INSPECTOR_QUERY);
+    if (!hit || !demoAreaEl.contains(hit)) {
+      if (lastInspectorSelector !== null) resetInspector();
+      return;
+    }
+
+    const selector = resolveBestSelector(hit);
+    if (!selector) {
+      if (lastInspectorSelector !== null) resetInspector();
+      return;
+    }
+    if (selector === lastInspectorSelector) return;
+
+    lastInspectorSelector = selector;
+    showInspector(selector, loader.get(selector));
+  });
+
+  demoAreaEl.addEventListener('pointerleave', () => {
+    resetInspector();
+  });
+}
+
+function selectorToSomValue(selector) {
+  return selector.startsWith('.') ? selector.slice(1) : selector;
+}
+
+function attachDataSomAttributes() {
+  for (const selector of COMPONENT_SELECTORS) {
+    const value = selectorToSomValue(selector);
+    for (const el of document.querySelectorAll(selector)) {
+      el.setAttribute('data-som', value);
+    }
+  }
+}
+
+function updateResizeReadout() {
+  const container = document.querySelector(RESIZE_BOUNDARY_SELECTOR);
+  const readout = document.getElementById('resize-width');
+  if (!container || !readout || typeof container.getBoundingClientRect !== 'function') return;
+  const w = Math.round(container.getBoundingClientRect().width);
+  readout.textContent = `${w}px`;
+}
+
+function updatePrefReadout() {
+  const pref = document.getElementById('pref-mode');
+  if (!pref || typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  pref.textContent = dark
+    ? 'prefers-color-scheme: dark'
+    : 'prefers-color-scheme: light';
+}
+
+function updateInvalidateLine(hash) {
+  const el = document.getElementById('invalidate-line');
+  if (!el) return;
+  const h = hash >>> 0;
+  invalidationCount += 1;
+  const selector = HASH_TO_SELECTOR.get(h) || '(unknown)';
+  el.textContent = `invalidate #${invalidationCount}: 0x${h.toString(16)} ${selector}`;
+}
+
+async function loadAndApply(url) {
+  const t0 = performance.now();
+  log(`fetch ${url} ...`);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const buffer = await response.arrayBuffer();
+    const t1 = performance.now();
+
+    loader = new SOMLoaderBrowser(buffer);
+    runtime = new SOMRuntime(loader, {
+      attr: 'data-som',
+      fallbackUrl: DEMO_FALLBACK_URL,
+      dev: true,
+      onInvalidate(hash) {
+        updateInvalidateLine(hash);
+        if ((hash >>> 0) === RESIZE_BOUNDARY_HASH) {
+          updateResizeReadout();
+        }
+        updatePrefReadout();
+      },
+    });
+    const t2 = performance.now();
+
+    log(`<span class="ok">✓</span> ${buffer.byteLength} bytes · fetch ${(t1 - t0).toFixed(1)}ms · parse ${(t2 - t1).toFixed(1)}ms · ${loader.stats.poolEntries} pool entries · ${loader.stats.staticComponents} static`);
+
+    attachDataSomAttributes();
+    await runtime.applyAll(demoAreaEl);
+    // Explicitly hit NONDETERMINISTIC selector so runtime lazy-loads fallback.css.
+    await runtime.applyStyles('.demo-list:has(.active)', document.querySelector('.demo-list'));
+    updateResizeReadout();
+    updatePrefReadout();
+
+    for (const { hash, sel } of ALL_COMPONENTS) {
+      const record = loader.get(hash);
+      const bySelector = loader.get(sel);
+      if (record && bySelector && record.hash !== bySelector.hash) {
+        console.warn(`[binary-som demo] hash mismatch for ${sel}:`, record.hash, bySelector.hash);
+      }
+    }
+
+    const badgeDet  = document.getElementById('badge-det');
+    const badgeNdet = document.getElementById('badge-ndet');
+    if (badgeDet)  { badgeDet.style.background = '#EEF2FF'; badgeDet.style.color = '#4F46E5'; }
+    if (badgeNdet) { badgeNdet.style.background = '#FEF2F2'; badgeNdet.style.color = '#DC2626'; }
+
+    const sv = document.getElementById('stat-static');
+    const sd = document.getElementById('stat-det');
+    const sp = document.getElementById('stat-pool');
+    if (sv) sv.textContent = loader.stats.staticComponents;
+    if (sd) sd.textContent = loader.stats.indexedDynamic;
+    if (sp) sp.textContent = loader.stats.poolEntries;
+    bindInspector();
+
+    console.log('[binary-som demo] Loaded:', loader.stats);
+    if (runtime.fallbackLoaded) {
+      console.log('[binary-som demo] NONDETERMINISTIC selector detected, fallback.css loaded');
+    }
+    console.log('[binary-som demo] O(1) lookup sample:', {
+      selector: '.demo-card',
+      hash: `0x${fnv1a32('.demo-card').toString(16)}`,
+      found: !!loader.get('.demo-card'),
+    });
+  } catch (e) {
+    log(`<span class="err">✗</span> ${e.message}`);
+    console.error('[binary-som demo]', e);
+  }
+}
+
+function reload() {
+  if (loader) loadAndApply(DEMO_SOM_URL);
+}
+
+window.reload = reload;
+loadAndApply(DEMO_SOM_URL);
+</script>
+</body>
+</html>
