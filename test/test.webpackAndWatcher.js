@@ -1,9 +1,9 @@
 'use strict';
 
-const { BinarySomPlugin } = require('../src/webpackPlugin');
-const { computeDiff, formatDiff, snapshotResult } = require('../src/watcher');
+const { BinarySomPlugin } = require('../dist/src/webpackPlugin');
+const { computeDiff, formatDiff, snapshotResult } = require('../dist/src/watcher');
 const { analyseCSS } = require('../dist/src/analyser');
-const { SOMLoader }  = require('../src/loader');
+const { SOMLoader }  = require('../dist/src/loader');
 
 let passed = 0, failed = 0;
 const failures = [];
@@ -263,4 +263,5 @@ section('2. BinarySomPlugin — production build');
     console.log('  ✓ All webpack + watcher tests passed.\n');
   }
 })();
+
 

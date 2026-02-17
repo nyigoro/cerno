@@ -9,7 +9,7 @@
 const {
   PoolBuilder, PoolReader, buildPoolFromAnalysis,
   NULL_REF, POOL_MAGIC, POOL_VERSION,
-} = require('../src/constantPool');
+} = require('../dist/src/constantPool');
 
 let passed = 0, failed = 0;
 const failures = [];
@@ -400,3 +400,4 @@ if (failed > 0) {
 } else {
   console.log('\n  ✓ All constant pool tests passed.\n');
 }
+

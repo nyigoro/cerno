@@ -5,9 +5,9 @@ const path = require("node:path");
 const { performance } = require("node:perf_hooks");
 
 const { analyseCSS } = require("../dist/src/analyser");
-const { buildPoolFromAnalysis } = require("../src/constantPool");
-const { emitComponentSection, assembleBinary } = require("../src/emitter");
-const { SOMLoader } = require("../src/loader");
+const { buildPoolFromAnalysis } = require("../dist/src/constantPool");
+const { emitComponentSection, assembleBinary } = require("../dist/src/emitter");
+const { SOMLoader } = require("../dist/src/loader");
 
 function readText(filePath) {
   return fs.readFileSync(filePath, "utf8");
@@ -340,4 +340,5 @@ function main() {
 if (require.main === module) {
   main();
 }
+
 

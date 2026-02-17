@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // webpack-plugin-binary-som
 // COMP-SPEC-001 v0.2  §10
@@ -24,8 +25,8 @@
 
 'use strict';
 
-const { analyseCSS }                           = require('../dist/src/analyser');
-const { emitFallbackCss }                      = require('../dist/src/fallbackEmitter');
+const { analyseCSS }                           = require('./analyser');
+const { emitFallbackCss }                      = require('./fallbackEmitter');
 const { buildPoolFromAnalysis }                = require('./constantPool');
 const { emitComponentSection, assembleBinary, fnv1a32 } = require('./emitter');
 
@@ -363,4 +364,5 @@ function printBuildReport(summary, verbose) {
 }
 
 module.exports = { BinarySomPlugin };
+
 

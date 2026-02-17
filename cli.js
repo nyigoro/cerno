@@ -4,9 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { analyseCSS } = require("./dist/src/analyser");
 const { renderReport, toJSON } = require("./dist/src/reporter");
-const { buildPoolFromAnalysis } = require("./src/constantPool");
-const { emitComponentSection, assembleBinary } = require("./src/emitter");
-const { SOMWatcher } = require("./src/watcher");
+const { buildPoolFromAnalysis } = require("./dist/src/constantPool");
+const { emitComponentSection, assembleBinary } = require("./dist/src/emitter");
+const { SOMWatcher } = require("./dist/src/watcher");
 
 function usage() {
   return [
@@ -248,4 +248,5 @@ if (require.main === module) {
 module.exports = {
   main,
 };
+
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // vite-plugin-binary-som
 // COMP-SPEC-001 v0.2  §9
@@ -26,8 +27,8 @@
 'use strict';
 
 const path = require('path');
-const { analyseCSS }                           = require('../dist/src/analyser');
-const { emitFallbackCss }                      = require('../dist/src/fallbackEmitter');
+const { analyseCSS }                           = require('./analyser');
+const { emitFallbackCss }                      = require('./fallbackEmitter');
 const { buildPoolFromAnalysis }                = require('./constantPool');
 const { emitComponentSection, assembleBinary, fnv1a32 } = require('./emitter');
 
@@ -371,4 +372,5 @@ function printBuildReport(summary, verbose) {
 }
 
 module.exports = { binarySomPlugin };
+
 

@@ -7,8 +7,8 @@
 'use strict';
 
 const { emitComponentSection, assembleBinary, fnv1a32,
-        RecordType, STATIC_MAGIC, DYNAMIC_MAGIC, FILE_MAGIC } = require('../src/emitter');
-const { PoolBuilder, buildPoolFromAnalysis, NULL_REF } = require('../src/constantPool');
+        RecordType, STATIC_MAGIC, DYNAMIC_MAGIC, FILE_MAGIC } = require('../dist/src/emitter');
+const { PoolBuilder, buildPoolFromAnalysis, NULL_REF } = require('../dist/src/constantPool');
 const { analyseCSS } = require('../dist/src/analyser');
 
 let passed = 0, failed = 0;
@@ -444,4 +444,5 @@ if (failed > 0) {
 } else {
   console.log('\n  ✓ All emitter tests passed.\n');
 }
+
 

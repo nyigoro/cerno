@@ -1,6 +1,6 @@
 'use strict';
 
-const { fnv1a32 } = require('../src/emitter');
+const { fnv1a32 } = require('../dist/src/emitter');
 const { SOMRuntime } = require('../dist/src/runtime');
 
 let passed = 0;

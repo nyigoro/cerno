@@ -11,7 +11,7 @@ const {
   DYNAMIC_MAGIC,
   FILE_MAGIC,
   FILE_VERSION,
-} = require("./src/emitter");
+} = require("./dist/src/emitter");
 const {
   collectFallbackRules,
   emitFallbackCss,
@@ -24,7 +24,7 @@ const {
   POOL_MAGIC,
   POOL_VERSION,
   COMMON_CSS_PROPERTIES,
-} = require("./src/constantPool");
+} = require("./dist/src/constantPool");
 const {
   SOMLoader,
   loadSOM,
@@ -32,7 +32,7 @@ const {
   BoundaryManifest,
   RuleSetRecord,
   NondeterministicRecord,
-} = require("./src/loader");
+} = require("./dist/src/loader");
 const {
   SOMLoaderBrowser,
 } = require("./dist/src/browserLoader");
@@ -42,9 +42,9 @@ const {
 const {
   SubscriptionManager,
 } = require("./dist/src/subscriptionManager");
-const { binarySomPlugin } = require("./src/vitePlugin");
-const { BinarySomPlugin } = require("./src/webpackPlugin");
-const { SOMWatcher, computeDiff, formatDiff, snapshotResult } = require("./src/watcher");
+const { binarySomPlugin } = require("./dist/src/vitePlugin");
+const { BinarySomPlugin } = require("./dist/src/webpackPlugin");
+const { SOMWatcher, computeDiff, formatDiff, snapshotResult } = require("./dist/src/watcher");
 
 module.exports = {
   analyseCSS,
@@ -85,4 +85,5 @@ module.exports = {
   formatDiff,
   snapshotResult,
 };
+
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // Binary SOM — Component Section Emitter
 // COMP-SPEC-001 v0.2  §7
@@ -505,3 +506,4 @@ module.exports = {
   FILE_MAGIC,
   FILE_VERSION,
 };
+

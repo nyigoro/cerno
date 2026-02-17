@@ -796,3 +796,4 @@ console.log('═'.repeat(70));
 console.log('');
 console.log('  Note: These tests cover a range of edge cases but are not exhaustive. For comprehensive validation, consider integrating with a full CSS test suite or real-world stylesheets.');    
 
+

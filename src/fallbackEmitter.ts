@@ -1,4 +1,4 @@
-import { fnv1a32 } from "./emitter";
+const { fnv1a32 } = require("./emitter");
 
 type DeclarationMap = Map<string, string>;
 

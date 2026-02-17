@@ -12,8 +12,8 @@ const { SOMRuntime } = require('../dist/src/runtime');
 
 // Build pipeline — needed to produce reference binaries
 const { analyseCSS } = require("../dist/src/analyser");
-const { buildPoolFromAnalysis }                = require('../src/constantPool');
-const { emitComponentSection, assembleBinary } = require('../src/emitter');
+const { buildPoolFromAnalysis }                = require('../dist/src/constantPool');
+const { emitComponentSection, assembleBinary } = require('../dist/src/emitter');
 
 let passed = 0, failed = 0;
 const failures = [];
@@ -77,8 +77,8 @@ section('1. fnv1a32 — hash function correctness');
 assert('fnv1a32("") = 0x811c9dc5',   fnv1a32(''),    0x811c9dc5);
 assert('fnv1a32(".btn") stable',      typeof fnv1a32('.btn'),            'number');
 assert('fnv1a32(".btn") is uint32',   fnv1a32('.btn') >>> 0,             fnv1a32('.btn'));
-assert('fnv1a32 same as emitter',     fnv1a32('.btn'),                   require('../src/emitter').fnv1a32('.btn'));
-assert('fnv1a32(".card") matches',    fnv1a32('.card'),                  require('../src/emitter').fnv1a32('.card'));
+assert('fnv1a32 same as emitter',     fnv1a32('.btn'),                   require('../dist/src/emitter').fnv1a32('.btn'));
+assert('fnv1a32(".card") matches',    fnv1a32('.card'),                  require('../dist/src/emitter').fnv1a32('.card'));
 assert('fnv1a32 unicode stable',      fnv1a32('日本語'),                  fnv1a32('日本語'));
 assert('different selectors differ',  fnv1a32('.btn') !== fnv1a32('.card'), true);
 
@@ -256,7 +256,7 @@ section('7. Full pipeline fidelity — Node loader vs browser loader');
 // =============================================================================
 // Both loaders read the same binary. Results must be identical.
 {
-  const { SOMLoader: NodeLoader } = require('../src/loader');
+  const { SOMLoader: NodeLoader } = require('../dist/src/loader');
   const css = `
     :root { --c: #2563EB; --r: 4px; }
     .btn  { color: var(--c); padding: 8px; border-radius: var(--r); }
@@ -564,4 +564,5 @@ if (failed > 0) {
     console.log('  ✓ All browser loader tests passed.\n');
   }
 })();
+
 

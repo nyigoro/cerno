@@ -9,7 +9,7 @@
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "strict": false,
     "skipLibCheck": true,
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "resolveJsonModule": true,
     "lib": ["ES2020", "DOM"]

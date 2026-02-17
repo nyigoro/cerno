@@ -5,9 +5,9 @@ const path = require("node:path");
 
 const { analyseCSS } = require("../dist/src/analyser");
 const { emitFallbackCss } = require("../dist/src/fallbackEmitter");
-const { buildPoolFromAnalysis } = require("../src/constantPool");
-const { emitComponentSection, assembleBinary, fnv1a32 } = require("../src/emitter");
-const { SOMLoader } = require("../src/loader");
+const { buildPoolFromAnalysis } = require("../dist/src/constantPool");
+const { emitComponentSection, assembleBinary, fnv1a32 } = require("../dist/src/emitter");
+const { SOMLoader } = require("../dist/src/loader");
 
 const root = __dirname;
 const cssPath = path.join(root, "styles.css");
@@ -108,4 +108,5 @@ for (const selector of selectors) {
   const key = `H_${selector.replace(/^\./, "").replace(/-/g, "_").toUpperCase()}`;
   console.log(`const ${key} = 0x${hash.toString(16)};`);
 }
+
 

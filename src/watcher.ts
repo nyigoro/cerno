@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // Binary SOM — Watch Mode
 // COMP-SPEC-001 v0.2  §11
@@ -26,7 +27,7 @@
 
 const fs   = require('fs');
 const path = require('path');
-const { analyseCSS } = require('../dist/src/analyser');
+const { analyseCSS } = require('./analyser');
 
 // ── Diff engine ────────────────────────────────────────────────────────────
 
@@ -292,4 +293,5 @@ function expandGlobs(patterns) {
 }
 
 module.exports = { SOMWatcher, computeDiff, formatDiff, snapshotResult };
+
 

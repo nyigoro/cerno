@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // Binary SOM — Constant Pool Emitter
 // COMP-SPEC-001 v0.2  §6 (new section)
@@ -421,3 +422,4 @@ module.exports = {
   POOL_VERSION,
   COMMON_CSS_PROPERTIES,
 };
+

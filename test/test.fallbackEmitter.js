@@ -2,7 +2,7 @@
 
 const { analyseCSS } = require('../dist/src/analyser');
 const { emitFallbackCss, collectFallbackRules } = require('../dist/src/fallbackEmitter');
-const { fnv1a32 } = require('../src/emitter');
+const { fnv1a32 } = require('../dist/src/emitter');
 
 let passed = 0;
 let failed = 0;

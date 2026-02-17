@@ -6,8 +6,8 @@
 
 'use strict';
 
-const { binarySomPlugin } = require('../src/vitePlugin');
-const { SOMLoader }       = require('../src/loader');
+const { binarySomPlugin } = require('../dist/src/vitePlugin');
+const { SOMLoader }       = require('../dist/src/loader');
 
 let passed = 0, failed = 0;
 const failures = [];
@@ -401,3 +401,4 @@ function runRemainingSync() {
     console.log('\n  ✓ All plugin tests passed.\n');
   }
 }
+

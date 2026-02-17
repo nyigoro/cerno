@@ -5,9 +5,9 @@
 
 'use strict';
 
-const { SOMLoader, loadSOM } = require('../src/loader');
-const { PoolBuilder, buildPoolFromAnalysis } = require('../src/constantPool');
-const { emitComponentSection, assembleBinary, fnv1a32 } = require('../src/emitter');
+const { SOMLoader, loadSOM } = require('../dist/src/loader');
+const { PoolBuilder, buildPoolFromAnalysis } = require('../dist/src/constantPool');
+const { emitComponentSection, assembleBinary, fnv1a32 } = require('../dist/src/emitter');
 const fs = require('fs');
 
 let passed = 0, failed = 0;
