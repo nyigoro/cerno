@@ -1,6 +1,6 @@
 {
   "name": "cerno",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Binary SOM analyser prototype for COMP-SPEC-001 v0.2",
   "main": "index.js",
   "type": "commonjs",
@@ -8,7 +8,7 @@
     "build": "npm run build:cjs && npm run build:browser",
     "build:cjs": "tsc -p tsconfig.json",
     "build:browser": "tsc -p tsconfig.browser.json",
-    "test": "npm run test:core",
+    "test": "npm run build && npm run test:core",
     "test:core": "node test.js",
     "test:pool": "node test/test.constantPool.js",
     "test:regression": "node test/regression.test.js",
@@ -22,10 +22,10 @@
     "test:reactive": "node test/test.reactive.js",
     "test:browser": "node test/test.browserLoader.js",
     "test:all": "npm run build && npm run test:core && npm run test:regression && npm run test:pool && npm run test:emitter && npm run test:loader && npm run test:plugin && npm run test:webpack && npm run test:warnings && npm run test:fallback && npm run test:sub && npm run test:reactive && npm run test:browser",
-    "demo:build": "node demo/buildDemoSom.js",
+    "demo:build": "npm run build && node demo/buildDemoSom.js",
     "demo:serve": "npx servor . demo/index.html 3000 --reload",
-    "analyze": "node cli.js",
-    "analyze:sample": "node cli.js test/sample.css --manifests"
+    "analyze": "npm run build && node cli.js",
+    "analyze:sample": "npm run build && node cli.js test/sample.css --manifests"
   },
   "license": "MIT",
   "devDependencies": {
